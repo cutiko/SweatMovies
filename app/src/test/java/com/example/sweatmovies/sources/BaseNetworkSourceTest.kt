@@ -1,9 +1,5 @@
 package com.example.sweatmovies.sources
 
-import com.example.sweatmovies.network.MovieDBService
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,7 +10,6 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
-import retrofit2.Retrofit
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BaseNetworkSourceTest {
