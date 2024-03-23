@@ -1,20 +1,26 @@
 package com.example.sweatmovies.repositories
 
+import com.example.sweatmovies.models.Movie
 import com.example.sweatmovies.models.MoviesResponse
 import com.example.sweatmovies.sources.NetworkResult
 import com.example.sweatmovies.sources.movies.MoviesLocalSource
 import com.example.sweatmovies.sources.movies.MoviesRemoteSource
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface MoviesRepository {
-    suspend fun getPopularMovies(): NetworkResult<MoviesResponse>
+    suspend fun fetchPopularMovies(): NetworkResult<MoviesResponse>
+
+    suspend fun getLocalPopular(ids: List<Int>): List<Movie>
+
+    fun observePopular(ids: List<Int>): Flow<List<Movie>>
 }
 
 class MoviesRepositoryImpl @Inject constructor(
     private val remoteSource: MoviesRemoteSource,
     private val localSource: MoviesLocalSource
 ) : MoviesRepository {
-    override suspend fun getPopularMovies(): NetworkResult<MoviesResponse> {
+    override suspend fun fetchPopularMovies(): NetworkResult<MoviesResponse> {
         val result = remoteSource.getPopular()
 
         when(result) {
@@ -26,5 +32,9 @@ class MoviesRepositoryImpl @Inject constructor(
 
         return result
     }
+
+    override suspend fun getLocalPopular(ids: List<Int>) = localSource.getPopular(ids)
+
+    override fun observePopular(ids: List<Int>) = localSource.observePopular(ids)
 
 }

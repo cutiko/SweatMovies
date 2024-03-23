@@ -13,23 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.lifecycleScope
-import com.example.sweatmovies.network.MovieDBService
-import com.example.sweatmovies.network.RetrofitProvider
 import com.example.sweatmovies.repositories.MoviesRepository
 import com.example.sweatmovies.sources.NetworkResult
-import com.example.sweatmovies.sources.movies.MoviesNetworkSource
+import com.example.sweatmovies.ui.home.usecases.GetMoviesByCategoryUseCase
 import com.example.sweatmovies.ui.theme.SweatMoviesTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.create
 import javax.inject.Inject
+import kotlin.math.log
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var moviesRepository: MoviesRepository
+    @Inject lateinit var useCase: GetMoviesByCategoryUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,14 +38,8 @@ class MainActivity : ComponentActivity() {
                     Button(
                         onClick = {
                             coroutineScope.launch {
-                                when (val result = moviesRepository.getPopularMovies()) {
-                                    is NetworkResult.Error -> Log.d("CUTIKO_TAG", "$result")
-                                    is NetworkResult.Success -> {
-                                        result.data.results.forEach {
-                                            Log.d("CUTIKO_TAG", "$it")
-                                        }
-
-                                    }
+                                useCase.observePopularMovies().collect {
+                                    Log.d("CUTIKO_TAG", "$it")
                                 }
                             }
                         }

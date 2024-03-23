@@ -36,13 +36,13 @@ class MoviesRepositoryImplTest {
         moviesRepository = MoviesRepositoryImpl(remoteSource, localSource)
     }
 
-    //region getPopular
+    //region fetchPopularMovies
     @Test
-    fun `test getPopular call the remote source`() = runTest {
+    fun `test fetchPopularMovies call the remote source`() = runTest {
         val expectedResult = NetworkResult.Error<MoviesResponse>()
         coEvery { remoteSource.getPopular() } returns expectedResult
 
-        val obtained = moviesRepository.getPopularMovies()
+        val obtained = moviesRepository.fetchPopularMovies()
 
         coVerify(exactly = 1) { remoteSource.getPopular() }
         verify { localSource wasNot Called }
@@ -51,7 +51,7 @@ class MoviesRepositoryImplTest {
     }
 
     @Test
-    fun `test getPopular call the remote and the local sources`() = runTest {
+    fun `test fetchPopularMovies call the remote and the local sources`() = runTest {
         val movies = listOf(Movie(), Movie(), Movie())
         val movieResponse = MoviesResponse(results = movies)
         val expectedResult = NetworkResult.Success(movieResponse)
@@ -59,7 +59,7 @@ class MoviesRepositoryImplTest {
         val moviesSlot = slot<List<Movie>>()
         coEvery { localSource.insertMovies(capture(moviesSlot)) } just Runs
 
-        val obtained = moviesRepository.getPopularMovies()
+        val obtained = moviesRepository.fetchPopularMovies()
 
         coVerify(exactly = 1) { remoteSource.getPopular() }
         assertEquals(movies, moviesSlot.captured)
@@ -72,5 +72,20 @@ class MoviesRepositoryImplTest {
         assertEquals(expectedResult, obtained)
     }
     //endregion
+
+    @Test
+    fun `test getLocalPopular calls de local source`() = runTest {
+        val ids = listOf(1, 2, 3)
+        val movies = ids.map { Movie(id = it) }
+        val idsSlot = slot<List<Int>>()
+        coEvery { localSource.getPopular(capture(idsSlot)) } returns movies
+
+        val obtained = moviesRepository.getLocalPopular(ids)
+
+        assertEquals(ids, idsSlot.captured)
+        coVerify { localSource.getPopular(ids) }
+        confirmVerified(localSource)
+        assertEquals(movies, obtained)
+    }
 
 }

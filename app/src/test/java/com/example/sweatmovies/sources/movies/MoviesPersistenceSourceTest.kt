@@ -32,16 +32,31 @@ class MoviesPersistenceSourceTest {
     }
 
     @Test
-    fun `test getAllPopular calls the DAO`() {
+    fun `test observePopular calls the DAO`() {
         val ids = listOf(1, 2, 3)
         val idsSlot = slot<List<Int>>()
-        every { moviesDao.getRecentPopular(capture(idsSlot)) } returns MutableStateFlow(emptyList())
+        every { moviesDao.observeRecentPopular(capture(idsSlot)) } returns MutableStateFlow(emptyList())
 
-        localSource.getAllPopular(ids)
+        localSource.observePopular(ids)
 
         assertEquals(ids, idsSlot.captured)
-        verify(exactly = 1) { moviesDao.getRecentPopular(ids) }
+        verify(exactly = 1) { moviesDao.observeRecentPopular(ids) }
         confirmVerified(moviesDao)
+    }
+
+    @Test
+    fun `test getPopular calls the DAO`() = runTest {
+        val ids = listOf(1, 2, 3)
+        val movies = ids.map { Movie(id = it) }
+        val idsSlot = slot<List<Int>>()
+        coEvery { moviesDao.getRecentPopular(capture(idsSlot)) } returns movies
+
+        val obtained = localSource.getPopular(ids)
+
+        assertEquals(ids, idsSlot.captured)
+        coVerify(exactly = 1) { moviesDao.getRecentPopular(ids) }
+        confirmVerified(moviesDao)
+        assertEquals(movies, obtained)
     }
 
     @Test

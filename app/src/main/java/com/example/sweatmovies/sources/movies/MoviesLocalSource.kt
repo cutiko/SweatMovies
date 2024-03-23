@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface MoviesLocalSource {
-    fun getAllPopular(ids: List<Int>): Flow<List<Movie>>
+    fun observePopular(ids: List<Int>): Flow<List<Movie>>
+
+    suspend fun getPopular(ids: List<Int>): List<Movie>
 
     suspend fun insertMovies(movies: List<Movie>)
 }
@@ -15,7 +17,11 @@ class MoviesPersistenceSource @Inject constructor(
     private val dataBase: MoviesDataBase
 ) : MoviesLocalSource {
 
-    override fun getAllPopular(ids: List<Int>): Flow<List<Movie>> {
+    override fun observePopular(ids: List<Int>): Flow<List<Movie>> {
+        return dataBase.moviesDao().observeRecentPopular(ids)
+    }
+
+    override suspend fun getPopular(ids: List<Int>): List<Movie> {
         return dataBase.moviesDao().getRecentPopular(ids)
     }
 
