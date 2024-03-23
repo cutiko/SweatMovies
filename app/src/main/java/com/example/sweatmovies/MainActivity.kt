@@ -16,13 +16,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.sweatmovies.network.MovieDBService
 import com.example.sweatmovies.network.RetrofitProvider
 import com.example.sweatmovies.ui.theme.SweatMoviesTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import retrofit2.Retrofit
 import retrofit2.create
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject lateinit var retrofit: Retrofit
     private val moviesService by lazy {
-        RetrofitProvider.retrofit().create(MovieDBService::class.java)
+        retrofit.create(MovieDBService::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
