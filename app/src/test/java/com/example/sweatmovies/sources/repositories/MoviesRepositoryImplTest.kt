@@ -2,7 +2,6 @@ package com.example.sweatmovies.sources.repositories
 
 import com.example.sweatmovies.models.Movie
 import com.example.sweatmovies.models.MoviesResponse
-import com.example.sweatmovies.network.MovieDBService
 import com.example.sweatmovies.repositories.MoviesRepositoryImpl
 import com.example.sweatmovies.sources.NetworkResult
 import com.example.sweatmovies.sources.movies.MoviesLocalSource
@@ -13,7 +12,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
@@ -23,7 +21,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Retrofit
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MoviesRepositoryImplTest {
@@ -60,16 +57,16 @@ class MoviesRepositoryImplTest {
         val expectedResult = NetworkResult.Success(movieResponse)
         coEvery { remoteSource.getPopular() } returns expectedResult
         val moviesSlot = slot<List<Movie>>()
-        coEvery { localSource.insertPopular(capture(moviesSlot)) } just Runs
+        coEvery { localSource.insertMovies(capture(moviesSlot)) } just Runs
 
         val obtained = moviesRepository.getPopularMovies()
 
         coVerify(exactly = 1) { remoteSource.getPopular() }
         assertEquals(movies, moviesSlot.captured)
-        coVerify(exactly = 1) { localSource.insertPopular(movies) }
+        coVerify(exactly = 1) { localSource.insertMovies(movies) }
         coVerifyOrder {
             remoteSource.getPopular()
-            localSource.insertPopular(movies)
+            localSource.insertMovies(movies)
         }
         confirmVerified(remoteSource, localSource)
         assertEquals(expectedResult, obtained)

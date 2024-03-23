@@ -3,7 +3,6 @@ package com.example.sweatmovies.sources.movies
 import com.example.sweatmovies.db.MoviesDao
 import com.example.sweatmovies.db.MoviesDataBase
 import com.example.sweatmovies.models.Movie
-import com.example.sweatmovies.models.Movie.Origin
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
@@ -34,11 +33,14 @@ class MoviesPersistenceSourceTest {
 
     @Test
     fun `test getAllPopular calls the DAO`() {
-        every { moviesDao.getAllPopular() } returns MutableStateFlow(emptyList())
+        val ids = listOf(1, 2, 3)
+        val idsSlot = slot<List<Int>>()
+        every { moviesDao.getRecentPopular(capture(idsSlot)) } returns MutableStateFlow(emptyList())
 
-        localSource.getAllPopular()
+        localSource.getAllPopular(ids)
 
-        verify(exactly = 1) { moviesDao.getAllPopular() }
+        assertEquals(ids, idsSlot.captured)
+        verify(exactly = 1) { moviesDao.getRecentPopular(ids) }
         confirmVerified(moviesDao)
     }
 
@@ -48,16 +50,11 @@ class MoviesPersistenceSourceTest {
             Movie(id = 1),
             Movie(id = 2)
         )
-        val moviesSlot = slot<List<Movie>>()
-        coEvery { moviesDao.insertPopular(
-            capture(moviesSlot)
-        ) } just runs
+        coEvery { moviesDao.insert(any()) } just runs
 
-        localSource.insertPopular(movies)
+        localSource.insertMovies(movies)
 
-        val expectedArgument = movies.map { it.copy(origin = Origin.Popular) }
-        assertEquals(expectedArgument, moviesSlot.captured)
-        coVerify(exactly = 1) { moviesDao.insertPopular(expectedArgument) }
+        coVerify(exactly = 1) { moviesDao.insert(any()) }
         confirmVerified(moviesDao)
     }
 
