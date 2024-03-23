@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sweatmovies.network.MovieDBService
 import com.example.sweatmovies.network.RetrofitProvider
+import com.example.sweatmovies.sources.NetworkResult
+import com.example.sweatmovies.sources.movies.MoviesNetworkSource
 import com.example.sweatmovies.ui.theme.SweatMoviesTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -25,10 +27,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var retrofit: Retrofit
-    private val moviesService by lazy {
-        retrofit.create(MovieDBService::class.java)
-    }
+    @Inject lateinit var moviesNetworkSource: MoviesNetworkSource
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +40,14 @@ class MainActivity : ComponentActivity() {
                     Button(
                         onClick = {
                             coroutineScope.launch {
-                                val result = moviesService.getPopular()
-                                Log.d("CUTIKO_TAG", "RESULT: $result")
-                                Log.d("CUTIKO_TAG", "RESULT: ${result.body()?.results?.size}")
-                                result.body()?.results?.forEach {
-                                    Log.d("CUTIKO_TAG", "$it")
+                                when (val result = moviesNetworkSource.getPopular()) {
+                                    is NetworkResult.Error -> Log.d("CUTIKO_TAG", "$result")
+                                    is NetworkResult.Success -> {
+                                        result.data.results.forEach {
+                                            Log.d("CUTIKO_TAG", "$it")
+                                        }
+
+                                    }
                                 }
                             }
                         }
