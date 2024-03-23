@@ -17,4 +17,9 @@ abstract class RepositoriesModule {
         moviesNetworkSource: MoviesRepositoryImpl
     ): MoviesRepository
 
+    @Binds
+    abstract fun providesMovieCategoriesRepository(
+        movieCategoriesRepository: MovieCategoriesRepositoryImpl
+    ): MovieCategoriesRepository
+
 }
