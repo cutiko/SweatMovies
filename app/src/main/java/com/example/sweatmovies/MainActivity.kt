@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.example.sweatmovies.network.MovieDBService
 import com.example.sweatmovies.network.RetrofitProvider
+import com.example.sweatmovies.repositories.MoviesRepository
 import com.example.sweatmovies.sources.NetworkResult
 import com.example.sweatmovies.sources.movies.MoviesNetworkSource
 import com.example.sweatmovies.ui.theme.SweatMoviesTheme
@@ -28,7 +29,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var moviesNetworkSource: MoviesNetworkSource
+    @Inject lateinit var moviesRepository: MoviesRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     Button(
                         onClick = {
                             coroutineScope.launch {
-                                when (val result = moviesNetworkSource.getPopular()) {
+                                when (val result = moviesRepository.getPopularMovies()) {
                                     is NetworkResult.Error -> Log.d("CUTIKO_TAG", "$result")
                                     is NetworkResult.Success -> {
                                         result.data.results.forEach {

@@ -1,4 +1,4 @@
-package com.example.sweatmovies.sources
+package com.example.sweatmovies.repositories
 
 import com.example.sweatmovies.sources.movies.MoviesLocalSource
 import com.example.sweatmovies.sources.movies.MoviesNetworkSource
@@ -11,15 +11,10 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class SourcesModule {
+abstract class RepositoriesModule {
     @Binds
-    abstract fun providesMoviesRemoteSource(
-        moviesNetworkSource: MoviesNetworkSource
-    ): MoviesRemoteSource
-
-    @Binds
-    abstract fun providesMoviesLocalSource(
-        moviesLocalSource: MoviesPersistenceSource
-    ): MoviesLocalSource
+    abstract fun providesMoviesRepository(
+        moviesNetworkSource: MoviesRepositoryImpl
+    ): MoviesRepository
 
 }

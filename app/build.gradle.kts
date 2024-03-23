@@ -73,6 +73,12 @@ dependencies {
     //coroutines
     implementation(libs.kotlinx.coroutines.android)
 
+    //region ROOM
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler) //cant add KSP, have to migrate the whole gradle later
+    implementation(libs.androidx.room.ktx)
+    //endregion
+
     //default libs
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
