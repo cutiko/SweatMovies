@@ -70,6 +70,9 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     //endregion
 
+    //coroutines
+    implementation(libs.kotlinx.coroutines.android)
+
     //default libs
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -79,7 +82,14 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    //region unit test
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk.android)
+    testImplementation(libs.mockk.agent)
+    //endregion
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
