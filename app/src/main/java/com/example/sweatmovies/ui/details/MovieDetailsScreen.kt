@@ -2,12 +2,10 @@ package com.example.sweatmovies.ui.details
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -17,7 +15,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sweatmovies.ui.details.composables.MovieDetailsContent
 import com.example.sweatmovies.ui.details.composables.MovieDetailsTopBar
-import com.example.sweatmovies.ui.details.uimodels.MovieDetailsAction
 import kotlinx.coroutines.launch
 
 @Composable
@@ -28,7 +25,7 @@ fun MovieDetailsScreens(movieId: Int, backNavigation: ()-> Unit) {
     val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.getMovie(movieId)
+        viewModel.observeMovie(movieId)
     }
 
     Scaffold(
@@ -46,7 +43,9 @@ fun MovieDetailsScreens(movieId: Int, backNavigation: ()-> Unit) {
                     context.startActivity(intent)
                 }
             },
-            onFavoriteClicked = {  }
+            onFavoriteClicked = { isFavorite ->
+                viewModel.updateFavorite(isFavorite, movieId)
+            }
         )
     }
 }

@@ -2,6 +2,8 @@ package com.example.sweatmovies.sources
 
 import com.example.sweatmovies.sources.categories.MoviesCategoriesLocalSource
 import com.example.sweatmovies.sources.categories.MoviesCategoriesPersistenceSource
+import com.example.sweatmovies.sources.favorites.FavoriteMoviesLocalSource
+import com.example.sweatmovies.sources.favorites.FavoriteMoviesPersistenceSource
 import com.example.sweatmovies.sources.movies.MoviesLocalSource
 import com.example.sweatmovies.sources.movies.MoviesNetworkSource
 import com.example.sweatmovies.sources.movies.MoviesPersistenceSource
@@ -28,5 +30,10 @@ abstract class SourcesModule {
     abstract fun providesMoviesCategoriesLocalSource(
         moviesCategoriesLocalSource: MoviesCategoriesPersistenceSource
     ): MoviesCategoriesLocalSource
+
+    @Binds
+    abstract fun providesFavoriteMoviesLocalSource(
+        FavoriteMoviesLocalSource: FavoriteMoviesPersistenceSource
+    ): FavoriteMoviesLocalSource
 
 }

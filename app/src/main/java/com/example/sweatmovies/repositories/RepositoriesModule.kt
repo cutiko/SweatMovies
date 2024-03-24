@@ -21,5 +21,9 @@ abstract class RepositoriesModule {
     abstract fun providesMovieCategoriesRepository(
         movieCategoriesRepository: MovieCategoriesRepositoryImpl
     ): MovieCategoriesRepository
+    @Binds
+    abstract fun providesFavoritesRepository(
+        favoritesRepository: FavoritesRepositoryImpl
+    ): FavoritesRepository
 
 }
