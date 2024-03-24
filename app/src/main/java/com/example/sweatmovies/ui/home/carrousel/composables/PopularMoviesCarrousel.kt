@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.sweatmovies.ui.composables.Loading
+import com.example.sweatmovies.ui.composables.CircularLoading
 import com.example.sweatmovies.ui.home.carrousel.PopularMoviesViewModel
 import com.example.sweatmovies.ui.home.carrousel.uimodels.PopularCarrouselItem
 
@@ -22,7 +22,7 @@ fun PopularMoviesCarrousel(
     LazyRow {
         items(count = movies.size, key = { index -> movies[index].id }) { index ->
             when(val movie = movies[index]) {
-                PopularCarrouselItem.Loading -> Loading()
+                PopularCarrouselItem.Loading -> CircularLoading()
                 is PopularCarrouselItem.Movie -> MovieCarrouselItem(movie, onItemClicked)
             }
         }

@@ -1,6 +1,7 @@
 package com.example.sweatmovies.ui.search.uimodels
 
 import com.example.sweatmovies.models.MovieOverview
+import com.example.sweatmovies.ui.search.uimodels.SearchResultItem.Companion.addLoading
 import com.example.sweatmovies.ui.search.uimodels.SearchResultItem.Companion.update
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
@@ -25,6 +26,18 @@ class SearchResultItemTest {
             val item = updated[index] as SearchResultItem.Overview
             assertEquals(overview.id, item.id)
         }
+    }
+
+    @Test
+    fun `test addLoading appends a loading at the beginning`() {
+        val overviews = listOf(MovieOverview(id = 1))
+
+        val original = SearchResultItem.default.update(overviews)
+        val updated = original.addLoading()
+
+        assertEquals(overviews.size + 1, updated.size)
+        val loading = updated.first() as SearchResultItem.Loading
+        assertEquals(SearchResultItem.Loading, loading)
     }
 
 }

@@ -2,8 +2,9 @@ package com.example.sweatmovies.ui.search
 
 import com.example.sweatmovies.ViewModelTest
 import com.example.sweatmovies.models.MovieOverview
-import com.example.sweatmovies.ui.search.uimodels.SearchResultItem
-import com.example.sweatmovies.ui.search.uimodels.SearchResultItem.Companion.update
+import com.example.sweatmovies.ui.search.uimodels.SearchResultsScreenState
+import com.example.sweatmovies.ui.search.uimodels.SearchResultsScreenState.Companion.updateResults
+import com.example.sweatmovies.ui.search.uimodels.SearchResultsScreenState.Companion.updateUserInput
 import com.example.sweatmovies.ui.search.usecases.SearchMoviesUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -26,22 +27,32 @@ class SearchMovieViewModelTest : ViewModelTest {
     }
 
     @Test
-    fun `test search updates the resultItems`() = runUnconfinedTest {
+    fun `test search calls the use case`() = runUnconfinedTest {
         val expectedTerm = "madame web"
         val termSlot = slot<String>()
-        val overviews = listOf(MovieOverview(id = 1), MovieOverview(id = 2), MovieOverview(id = 3))
-        coEvery { useCase.byTerm(capture(termSlot)) } returns overviews
+        coEvery { useCase.byTerm(capture(termSlot)) } returns emptyList()
 
-        val original = viewModel.resultItems.value
         viewModel.search(expectedTerm)
-        val updated = viewModel.resultItems.value
 
         assertEquals(expectedTerm, termSlot.captured)
         coVerify(exactly = 1) { useCase.byTerm(expectedTerm) }
         confirmVerified(useCase)
-        val default = SearchResultItem.default
+    }
+
+    @Test
+    fun `test search updates the screenState`() = runUnconfinedTest {
+        val term = "titanic"
+        val overviews = listOf(MovieOverview(id = 1), MovieOverview(id = 2), MovieOverview(id = 3))
+        coEvery { useCase.byTerm(any()) } returns overviews
+
+        val original = viewModel.screenState.value
+        viewModel.search(term)
+        val updated = viewModel.screenState.value
+
+
+        val default = SearchResultsScreenState.default
         assertEquals(original, default)
-        val expected = default.update(overviews)
+        val expected = default.updateUserInput(term).updateResults(overviews)
         assertEquals(expected, updated)
     }
 

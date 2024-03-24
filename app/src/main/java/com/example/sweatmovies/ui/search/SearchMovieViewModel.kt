@@ -2,8 +2,9 @@ package com.example.sweatmovies.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sweatmovies.ui.search.uimodels.SearchResultItem
-import com.example.sweatmovies.ui.search.uimodels.SearchResultItem.Companion.update
+import com.example.sweatmovies.ui.search.uimodels.SearchResultsScreenState
+import com.example.sweatmovies.ui.search.uimodels.SearchResultsScreenState.Companion.updateResults
+import com.example.sweatmovies.ui.search.uimodels.SearchResultsScreenState.Companion.updateUserInput
 import com.example.sweatmovies.ui.search.usecases.SearchMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,14 +18,14 @@ class SearchMovieViewModel @Inject constructor(
     private val searchMoviesUseCase: SearchMoviesUseCase
 ): ViewModel() {
 
-    private val _resultItems = MutableStateFlow(SearchResultItem.default)
-    val resultItems: StateFlow<List<SearchResultItem>>
-        get() = _resultItems
-
+    private val _screenState = MutableStateFlow(SearchResultsScreenState.default)
+    val screenState: StateFlow<SearchResultsScreenState>
+        get() = _screenState
 
     fun search(term: String) = viewModelScope.launch {
+        _screenState.update { it.updateUserInput(term) }
         val overviews = searchMoviesUseCase.byTerm(term)
-        _resultItems.update { it.update(overviews) }
+        _screenState.update { it.updateResults(overviews) }
     }
 
 }

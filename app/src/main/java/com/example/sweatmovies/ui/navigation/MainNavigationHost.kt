@@ -32,7 +32,9 @@ fun MainNavigationHost(
         }
 
         composable(Search.name) {
-            SearchScreen()
+            SearchScreen {
+                navController.navigate("${Details.name}/$it")
+            }
         }
 
         composable(WatchList.name) {

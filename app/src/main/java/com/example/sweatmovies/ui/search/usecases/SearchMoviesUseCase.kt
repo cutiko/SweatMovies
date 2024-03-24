@@ -11,6 +11,7 @@ class SearchMoviesUseCase @Inject constructor(
 
     private val softCache = mutableMapOf<String, List<MovieOverview>>()
     suspend fun byTerm(term: String): List<MovieOverview> {
+        if (term.isBlank()) return emptyList()
         softCache[term]?.let {
             return it
         }

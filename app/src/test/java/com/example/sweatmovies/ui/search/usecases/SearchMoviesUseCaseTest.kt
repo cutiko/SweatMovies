@@ -1,5 +1,6 @@
 package com.example.sweatmovies.ui.search.usecases
 
+import com.example.sweatmovies.models.Movie
 import com.example.sweatmovies.models.MovieOverview
 import com.example.sweatmovies.models.MoviesResponse
 import com.example.sweatmovies.repositories.MoviesRepository
@@ -23,6 +24,17 @@ class SearchMoviesUseCaseTest {
     fun setup() {
         repository = mockk()
         searchMoviesUseCase = SearchMoviesUseCase(repository)
+    }
+
+    @Test
+    fun `test byTerm does not call the repository with empty term`() = runTest {
+        val expectedQuery = "   "
+
+        val obtained = searchMoviesUseCase.byTerm(expectedQuery)
+
+        coVerify(exactly = 0) { repository.searchMovies(any()) }
+        confirmVerified(repository)
+        assertEquals(emptyList<MovieOverview>(), obtained)
     }
     @Test
     fun `test byTerm calls the repository`() = runTest {
