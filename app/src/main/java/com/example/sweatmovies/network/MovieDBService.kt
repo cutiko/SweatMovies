@@ -1,7 +1,5 @@
 package com.example.sweatmovies.network
 
-import com.example.sweatmovies.models.Movie
-import com.example.sweatmovies.models.MovieOverview
 import com.example.sweatmovies.models.MoviesResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -13,13 +11,13 @@ interface MovieDBService {
     suspend fun getPopular(
         @Query("language") language: String = "en-US",
         @Query("page") page: Int = 1
-    ): Response<MoviesResponse<Movie>>
+    ): Response<MoviesResponse>
 
-    @GET("search/collection")
+    @GET("search/movie")
     suspend fun search(
         @Query("query") query: String,
         @Query("include_adult") adultContent: Boolean = false,
         @Query("language") language: String = "en-US",
         @Query("page") page: Int = 1
-    ): Response<MoviesResponse<MovieOverview>>
+    ): Response<MoviesResponse>
 }

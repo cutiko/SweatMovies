@@ -1,7 +1,6 @@
 package com.example.sweatmovies.ui.search.usecases
 
 import com.example.sweatmovies.models.Movie
-import com.example.sweatmovies.models.MovieOverview
 import com.example.sweatmovies.models.MoviesResponse
 import com.example.sweatmovies.repositories.MoviesRepository
 import com.example.sweatmovies.sources.NetworkResult
@@ -34,14 +33,14 @@ class SearchMoviesUseCaseTest {
 
         coVerify(exactly = 0) { repository.searchMovies(any()) }
         confirmVerified(repository)
-        assertEquals(emptyList<MovieOverview>(), obtained)
+        assertEquals(emptyList<Movie>(), obtained)
     }
     @Test
     fun `test byTerm calls the repository`() = runTest {
         val expectedQuery = "dune"
         val querySlot = slot<String>()
-        val overviews = listOf(MovieOverview(), MovieOverview(), MovieOverview())
-        val response = MoviesResponse(results = overviews)
+        val movies = listOf(Movie(), Movie(), Movie())
+        val response = MoviesResponse(results = movies)
         val result = NetworkResult.Success(response)
         coEvery { repository.searchMovies(capture(querySlot)) } returns result
 
@@ -50,14 +49,14 @@ class SearchMoviesUseCaseTest {
         assertEquals(expectedQuery, querySlot.captured)
         coVerify(exactly = 1) { repository.searchMovies(expectedQuery) }
         confirmVerified(repository)
-        assertEquals(overviews, obtained)
+        assertEquals(movies, obtained)
     }
 
     @Test
     fun `test byTerm uses the softCache`() = runTest {
         val expectedQuery = "dune"
-        val overviews = listOf(MovieOverview(), MovieOverview(), MovieOverview())
-        val response = MoviesResponse(results = overviews)
+        val movies = listOf(Movie(), Movie(), Movie())
+        val response = MoviesResponse(results = movies)
         val result = NetworkResult.Success(response)
         coEvery { repository.searchMovies(any()) } returns result
 

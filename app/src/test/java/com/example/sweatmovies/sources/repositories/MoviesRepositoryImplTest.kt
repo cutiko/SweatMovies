@@ -1,7 +1,6 @@
 package com.example.sweatmovies.sources.repositories
 
 import com.example.sweatmovies.models.Movie
-import com.example.sweatmovies.models.MovieOverview
 import com.example.sweatmovies.models.MoviesResponse
 import com.example.sweatmovies.repositories.MoviesRepositoryImpl
 import com.example.sweatmovies.sources.NetworkResult
@@ -40,7 +39,7 @@ class MoviesRepositoryImplTest {
     //region fetchPopularMovies
     @Test
     fun `test fetchPopularMovies call the remote source`() = runTest {
-        val expectedResult = NetworkResult.Error<MoviesResponse<Movie>>()
+        val expectedResult = NetworkResult.Error<MoviesResponse>()
         coEvery { remoteSource.getPopular() } returns expectedResult
 
         val obtained = moviesRepository.fetchPopularMovies()
@@ -93,7 +92,7 @@ class MoviesRepositoryImplTest {
     fun `test searchMovies calls de remote source`() = runTest {
         val expectedQuery = "spiderman"
         val querySlot = slot<String>()
-        val result = NetworkResult.Error<MoviesResponse<MovieOverview>>()
+        val result = NetworkResult.Error<MoviesResponse>()
         coEvery { remoteSource.search(capture(querySlot)) } returns result
 
         val obtained = moviesRepository.searchMovies(expectedQuery)

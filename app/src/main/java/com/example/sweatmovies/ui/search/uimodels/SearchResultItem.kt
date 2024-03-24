@@ -1,6 +1,6 @@
 package com.example.sweatmovies.ui.search.uimodels
 
-import com.example.sweatmovies.models.MovieOverview
+import com.example.sweatmovies.models.Movie
 import com.example.sweatmovies.ui.search.uimodels.SearchResultItem.Companion.addLoading
 import com.example.sweatmovies.ui.search.uimodels.SearchResultItem.Companion.update
 
@@ -18,7 +18,7 @@ data class SearchResultsScreenState(
             )
         }
 
-        fun SearchResultsScreenState.updateResults(overviews: List<MovieOverview>): SearchResultsScreenState {
+        fun SearchResultsScreenState.updateResults(overviews: List<Movie>): SearchResultsScreenState {
             val items = this.results.update(overviews)
             return this.copy(results = items)
         }
@@ -36,11 +36,11 @@ sealed class SearchResultItem(open val id: Int) {
     companion object {
         val default: List<SearchResultItem> = emptyList()
 
-        fun List<SearchResultItem>.update(overviews: List<MovieOverview>): List<SearchResultItem> {
+        fun List<SearchResultItem>.update(overviews: List<Movie>): List<SearchResultItem> {
             return overviews.map {
                 Overview(
                     id = it.id,
-                    name = it.name,
+                    name = it.title,
                     photo = it.poster()
                 )
             }

@@ -1,7 +1,7 @@
 package com.example.sweatmovies.ui.search
 
 import com.example.sweatmovies.ViewModelTest
-import com.example.sweatmovies.models.MovieOverview
+import com.example.sweatmovies.models.Movie
 import com.example.sweatmovies.ui.search.uimodels.SearchResultsScreenState
 import com.example.sweatmovies.ui.search.uimodels.SearchResultsScreenState.Companion.updateResults
 import com.example.sweatmovies.ui.search.uimodels.SearchResultsScreenState.Companion.updateUserInput
@@ -42,8 +42,8 @@ class SearchMovieViewModelTest : ViewModelTest {
     @Test
     fun `test search updates the screenState`() = runUnconfinedTest {
         val term = "titanic"
-        val overviews = listOf(MovieOverview(id = 1), MovieOverview(id = 2), MovieOverview(id = 3))
-        coEvery { useCase.byTerm(any()) } returns overviews
+        val movies = listOf(Movie(id = 1), Movie(id = 2), Movie(id = 3))
+        coEvery { useCase.byTerm(any()) } returns movies
 
         val original = viewModel.screenState.value
         viewModel.search(term)
@@ -52,7 +52,7 @@ class SearchMovieViewModelTest : ViewModelTest {
 
         val default = SearchResultsScreenState.default
         assertEquals(original, default)
-        val expected = default.updateUserInput(term).updateResults(overviews)
+        val expected = default.updateUserInput(term).updateResults(movies)
         assertEquals(expected, updated)
     }
 
