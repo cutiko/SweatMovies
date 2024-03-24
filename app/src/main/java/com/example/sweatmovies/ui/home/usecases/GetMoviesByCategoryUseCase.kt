@@ -27,18 +27,18 @@ class GetMoviesByCategoryUseCase @Inject constructor(
         //we always fetch and that will update internally de movies in the DB
         val networkResult = moviesRepository.fetchPopularMovies()
         when (networkResult) {
-            is NetworkResult.Error -> Unit //maybe offline (not delete locals)
+            is NetworkResult.Error -> {
+                //if the request failed then the best effort is to emit local
+                emit(Result.Success(localPopularMovies))
+            }
             is NetworkResult.Success -> {
                 //update the categories so the next offline will have the categories updated
-                val ids = networkResult.data.results.map { it.id }
+                val movies = networkResult.data.results
+                val ids = movies.map { it.id }
                 categoriesRepository.updatePopular(ids)
+                emit(Result.Success(movies))
             }
         }
-        //now that the ids and the movies are updated we can join them and show them to the UI
-        //if the request above failed then we still show them what is on the DB
-        val updatedPopularIds = categoriesRepository.getCategories().popular
-        val updatedPopularMovies = moviesRepository.getLocalPopular(updatedPopularIds)
-        emit(Result.Success(updatedPopularMovies))
     }
 
     sealed class Result {
