@@ -23,5 +23,5 @@ data class Movie(
     val lastUpdate: Long? = 0L
 ) {
     @Ignore
-    fun poster() = "https://image.tmdb.org/t/p/w1280/$backdropPath"
+    fun poster() = "https://image.tmdb.org/t/p/w500/$backdropPath"
 }
