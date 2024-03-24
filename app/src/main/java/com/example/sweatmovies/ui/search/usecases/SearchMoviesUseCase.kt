@@ -2,7 +2,6 @@ package com.example.sweatmovies.ui.search.usecases
 
 import com.example.sweatmovies.models.Movie
 import com.example.sweatmovies.repositories.MoviesRepository
-import com.example.sweatmovies.sources.NetworkResult
 import javax.inject.Inject
 
 class SearchMoviesUseCase @Inject constructor(
@@ -15,13 +14,9 @@ class SearchMoviesUseCase @Inject constructor(
         softCache[term]?.let {
             return it
         }
-        val result = moviesRepository.searchMovies(term)
-        val overviews = when(result) {
-            is NetworkResult.Error -> emptyList()
-            is NetworkResult.Success -> result.data.results
-        }
-        softCache[term] = overviews
-        return overviews
+        val movies = moviesRepository.searchMovies(term)
+        softCache[term] = movies
+        return movies
     }
 
 }

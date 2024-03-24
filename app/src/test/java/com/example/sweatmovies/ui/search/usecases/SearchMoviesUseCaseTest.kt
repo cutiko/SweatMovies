@@ -40,9 +40,7 @@ class SearchMoviesUseCaseTest {
         val expectedQuery = "dune"
         val querySlot = slot<String>()
         val movies = listOf(Movie(), Movie(), Movie())
-        val response = MoviesResponse(results = movies)
-        val result = NetworkResult.Success(response)
-        coEvery { repository.searchMovies(capture(querySlot)) } returns result
+        coEvery { repository.searchMovies(capture(querySlot)) } returns movies
 
         val obtained = searchMoviesUseCase.byTerm(expectedQuery)
 
@@ -56,9 +54,7 @@ class SearchMoviesUseCaseTest {
     fun `test byTerm uses the softCache`() = runTest {
         val expectedQuery = "dune"
         val movies = listOf(Movie(), Movie(), Movie())
-        val response = MoviesResponse(results = movies)
-        val result = NetworkResult.Success(response)
-        coEvery { repository.searchMovies(any()) } returns result
+        coEvery { repository.searchMovies(any()) } returns movies
 
         searchMoviesUseCase.byTerm(expectedQuery)
         searchMoviesUseCase.byTerm(expectedQuery)

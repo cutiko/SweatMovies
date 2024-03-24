@@ -11,6 +11,8 @@ interface MoviesLocalSource {
     suspend fun getPopular(ids: List<Int>): List<Movie>
 
     suspend fun insertMovies(movies: List<Movie>)
+
+    suspend fun searchMovies(term: String): List<Movie>
 }
 
 class MoviesPersistenceSource @Inject constructor(
@@ -29,5 +31,7 @@ class MoviesPersistenceSource @Inject constructor(
         val populars = movies.map { it.copy(lastUpdate = System.currentTimeMillis()) }
         dataBase.moviesDao().insert(populars)
     }
+
+    override suspend fun searchMovies(term: String) = dataBase.moviesDao().likeSearch(term)
 
 }

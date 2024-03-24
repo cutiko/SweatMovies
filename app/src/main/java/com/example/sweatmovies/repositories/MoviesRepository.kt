@@ -15,7 +15,7 @@ interface MoviesRepository {
 
     fun observePopular(ids: List<Int>): Flow<List<Movie>>
 
-    suspend fun searchMovies(query: String): NetworkResult<MoviesResponse>
+    suspend fun searchMovies(query: String): List<Movie>
 }
 
 class MoviesRepositoryImpl @Inject constructor(
@@ -39,5 +39,19 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override fun observePopular(ids: List<Int>) = localSource.observePopular(ids)
 
-    override suspend fun searchMovies(query: String) = remoteSource.search(query)
+    override suspend fun searchMovies(query: String): List<Movie> {
+        val response = remoteSource.search(query)
+        //always update local for future offline situations, but only return exclusive from
+        //local if there was an error, LIKE searches can be widely different across systems
+        return when (response) {
+            is NetworkResult.Error -> {
+                localSource.searchMovies(query)
+            }
+            is NetworkResult.Success -> {
+                val serverMovies = response.data.results
+                localSource.insertMovies(serverMovies)
+                serverMovies
+            }
+        }
+    }
 }

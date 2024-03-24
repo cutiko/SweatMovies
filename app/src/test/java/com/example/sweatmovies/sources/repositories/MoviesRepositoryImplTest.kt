@@ -89,18 +89,33 @@ class MoviesRepositoryImplTest {
     }
 
     @Test
-    fun `test searchMovies calls de remote source`() = runTest {
+    fun `test searchMovies calls the remote source`() = runTest {
         val expectedQuery = "spiderman"
         val querySlot = slot<String>()
         val result = NetworkResult.Error<MoviesResponse>()
         coEvery { remoteSource.search(capture(querySlot)) } returns result
+        coEvery { localSource.searchMovies(any()) } returns emptyList()
 
-        val obtained = moviesRepository.searchMovies(expectedQuery)
+        moviesRepository.searchMovies(expectedQuery)
 
         assertEquals(expectedQuery, querySlot.captured)
-        coVerify { remoteSource.search(expectedQuery) }
-        confirmVerified(remoteSource)
-        assertEquals(result, obtained)
+        coVerify(exactly = 1) { remoteSource.search(expectedQuery) }
+        coVerify(exactly = 1) { localSource.searchMovies(any()) }
+        confirmVerified(remoteSource, localSource)
+    }
+
+    @Test
+    fun `test searchMovies calls the local source`() = runTest {
+        val expectedQuery = "spiderman"
+        val result = NetworkResult.Success(MoviesResponse())
+        coEvery { remoteSource.search(any()) } returns result
+        coEvery { localSource.insertMovies(any()) } just Runs
+
+        moviesRepository.searchMovies(expectedQuery)
+
+        coVerify(exactly = 1) { remoteSource.search(expectedQuery) }
+        coVerify(exactly = 1) { localSource.insertMovies(any()) }
+        confirmVerified(remoteSource, localSource)
     }
 
 }

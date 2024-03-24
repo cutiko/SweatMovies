@@ -8,13 +8,13 @@ import androidx.room.PrimaryKey
 data class Movie(
     @PrimaryKey val id: Int = 0,
     val adult: Boolean = false,
-    val backdropPath: String = "",
+    val backdropPath: String? = null,
     val genreIds: List<Int> = emptyList(),
     val originalLanguage: String = "",
     val originalTitle: String = "",
     val overview: String = "",
     val popularity: Double = 0.0,
-    val posterPath: String = "",
+    val posterPath: String? = null,
     val releaseDate: String = "",
     val title: String = "",
     val video: Boolean = false,
@@ -23,5 +23,7 @@ data class Movie(
     val lastUpdate: Long? = 0L
 ) {
     @Ignore
-    fun poster() = "https://image.tmdb.org/t/p/w500/$backdropPath"
+    fun poster(): String? = backdropPath?.let {
+        "https://image.tmdb.org/t/p/w500/$it"
+    }
 }

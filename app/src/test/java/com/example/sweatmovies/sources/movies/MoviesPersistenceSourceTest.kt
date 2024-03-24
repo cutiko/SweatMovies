@@ -73,4 +73,14 @@ class MoviesPersistenceSourceTest {
         confirmVerified(moviesDao)
     }
 
+    @Test
+    fun `test searchMovies calls the DAO`() = runTest {
+        coEvery { moviesDao.likeSearch(any()) } returns emptyList()
+
+        localSource.searchMovies("title")
+
+        coVerify(exactly = 1) { moviesDao.likeSearch(any()) }
+        confirmVerified(moviesDao)
+    }
+
 }
