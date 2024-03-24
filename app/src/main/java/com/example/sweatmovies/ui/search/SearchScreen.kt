@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sweatmovies.ui.search.composables.SearchBar
-import com.example.sweatmovies.ui.search.composables.SearchResultsList
+import com.example.sweatmovies.ui.composables.MoviesResultsList
 
 @Composable
 fun SearchScreen(
@@ -25,6 +25,6 @@ fun SearchScreen(
             viewModel.search(it)
         }
 
-        SearchResultsList(items = state.results, onItemClicked = onItemClicked)
+        MoviesResultsList(items = state.results, onItemClicked = onItemClicked)
     }
 }

@@ -38,7 +38,9 @@ fun MainNavigationHost(
         }
 
         composable(WatchList.name) {
-            WatchListScreen()
+            WatchListScreen {
+                navController.navigate("${Details.name}/$it")
+            }
         }
 
         composable(

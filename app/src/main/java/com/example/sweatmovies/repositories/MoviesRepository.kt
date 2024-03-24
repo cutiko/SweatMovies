@@ -20,6 +20,8 @@ interface MoviesRepository {
     suspend fun getTrailer(movieId: Int): String?
 
     suspend fun getMovie(id: Int): Movie?
+
+    suspend fun getMoviesById(ids: List<Int>): List<Movie>
 }
 
 class MoviesRepositoryImpl @Inject constructor(
@@ -67,4 +69,6 @@ class MoviesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMovie(id: Int) = localSource.getMovie(id)
+
+    override suspend fun getMoviesById(ids: List<Int>) = localSource.getMoviesById(ids)
 }
