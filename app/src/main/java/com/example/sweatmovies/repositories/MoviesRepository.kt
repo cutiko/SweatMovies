@@ -1,6 +1,7 @@
 package com.example.sweatmovies.repositories
 
 import com.example.sweatmovies.models.Movie
+import com.example.sweatmovies.models.MovieOverview
 import com.example.sweatmovies.models.MoviesResponse
 import com.example.sweatmovies.sources.NetworkResult
 import com.example.sweatmovies.sources.movies.MoviesLocalSource
@@ -14,6 +15,8 @@ interface MoviesRepository {
     suspend fun getLocalPopular(ids: List<Int>): List<Movie>
 
     fun observePopular(ids: List<Int>): Flow<List<Movie>>
+
+    suspend fun searchMovies(query: String): NetworkResult<MoviesResponse<MovieOverview>>
 }
 
 class MoviesRepositoryImpl @Inject constructor(
@@ -37,4 +40,5 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override fun observePopular(ids: List<Int>) = localSource.observePopular(ids)
 
+    override suspend fun searchMovies(query: String) = remoteSource.search(query)
 }

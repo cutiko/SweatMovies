@@ -1,6 +1,7 @@
 package com.example.sweatmovies.sources.repositories
 
 import com.example.sweatmovies.models.Movie
+import com.example.sweatmovies.models.MovieOverview
 import com.example.sweatmovies.models.MoviesResponse
 import com.example.sweatmovies.repositories.MoviesRepositoryImpl
 import com.example.sweatmovies.sources.NetworkResult
@@ -39,7 +40,7 @@ class MoviesRepositoryImplTest {
     //region fetchPopularMovies
     @Test
     fun `test fetchPopularMovies call the remote source`() = runTest {
-        val expectedResult = NetworkResult.Error<MoviesResponse>()
+        val expectedResult = NetworkResult.Error<MoviesResponse<Movie>>()
         coEvery { remoteSource.getPopular() } returns expectedResult
 
         val obtained = moviesRepository.fetchPopularMovies()
@@ -86,6 +87,21 @@ class MoviesRepositoryImplTest {
         coVerify { localSource.getPopular(ids) }
         confirmVerified(localSource)
         assertEquals(movies, obtained)
+    }
+
+    @Test
+    fun `test searchMovies calls de remote source`() = runTest {
+        val expectedQuery = "spiderman"
+        val querySlot = slot<String>()
+        val result = NetworkResult.Error<MoviesResponse<MovieOverview>>()
+        coEvery { remoteSource.search(capture(querySlot)) } returns result
+
+        val obtained = moviesRepository.searchMovies(expectedQuery)
+
+        assertEquals(expectedQuery, querySlot.captured)
+        coVerify { remoteSource.search(expectedQuery) }
+        confirmVerified(remoteSource)
+        assertEquals(result, obtained)
     }
 
 }

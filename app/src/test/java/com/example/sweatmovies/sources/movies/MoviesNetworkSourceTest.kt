@@ -6,6 +6,8 @@ import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -33,6 +35,21 @@ class MoviesNetworkSourceTest {
         networkSource.getPopular()
 
         coVerify(exactly = 1) { moviesDBService.getPopular() }
+        confirmVerified(moviesDBService)
+    }
+
+    @Test
+    fun `test search call the service`() = runTest {
+        val expectedQuery = "spiderman"
+        val querySlot = slot<String>()
+        coEvery { moviesDBService.search(
+            query = capture(querySlot)
+        ) } returns mockk()
+
+        networkSource.search(expectedQuery)
+
+        assertEquals(expectedQuery, querySlot.captured)
+        coVerify(exactly = 1) { moviesDBService.search(expectedQuery) }
         confirmVerified(moviesDBService)
     }
 
