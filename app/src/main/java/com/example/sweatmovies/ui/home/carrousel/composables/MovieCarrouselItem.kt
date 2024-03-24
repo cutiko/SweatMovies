@@ -16,7 +16,10 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.sweatmovies.ui.home.carrousel.uimodels.PopularCarrouselItem
 
 @Composable
-fun MovieCarrouselItem(movie: PopularCarrouselItem.Movie, onItemClicked: () -> Unit) {
+fun MovieCarrouselItem(
+    movie: PopularCarrouselItem.Movie,
+    onItemClicked: (Int) -> Unit
+) {
     Box(
         modifier = Modifier.padding(16.dp)
     ) {
@@ -24,7 +27,7 @@ fun MovieCarrouselItem(movie: PopularCarrouselItem.Movie, onItemClicked: () -> U
             modifier = Modifier
                 .size(180.dp, 240.dp)
                 .padding(16.dp)
-                .clickable { onItemClicked.invoke() },
+                .clickable { onItemClicked.invoke(movie.id) },
             painter = rememberAsyncImagePainter(
                 movie.photo
             ),

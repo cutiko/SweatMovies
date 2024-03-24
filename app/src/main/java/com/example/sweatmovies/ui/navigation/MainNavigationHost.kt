@@ -4,8 +4,10 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.sweatmovies.R
 import com.example.sweatmovies.ui.search.SearchScreen
 import com.example.sweatmovies.ui.details.MovieDetailsScreens
@@ -21,15 +23,12 @@ fun MainNavigationHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = MainDestination.Home.destinationName
+        startDestination = MainNavigationDestinations.Home.name
     ) {
         composable(Home.name) {
             PopularMoviesCarrousel {
-                navController.navigate(Details.name)
+                navController.navigate("${Details.name}/$it")
             }
-        }
-        composable(Details.name) {
-            MovieDetailsScreens()
         }
 
         composable(Search.name) {
@@ -39,37 +38,25 @@ fun MainNavigationHost(
         composable(WatchList.name) {
             WatchListScreen()
         }
+
+        composable(
+            route = "${Details.name}/{movieId}",
+            arguments = listOf(navArgument("movieId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
+            MovieDetailsScreens(movieId)
+        }
     }
 }
 
-sealed class MainDestination(
-    type: MainNavigationDestinations = MainNavigationDestinations.Home,
-) {
-
-    val destinationName = type.name
-    data object Home : MainDestination(MainNavigationDestinations.Home), Tab {
-        override val title = R.string.bottom_bar_home
-        override val destination = destinationName
-    }
-    data object Search : MainDestination(MainNavigationDestinations.Search), Tab {
-        override val title = R.string.bottom_bar_search
-        override val destination = destinationName
-    }
-    data object WatchList : MainDestination(MainNavigationDestinations.WatchList), Tab {
-        override val title = R.string.bottom_bar_watch_list
-        override val destination = destinationName
-    }
-    data object Details : MainDestination(MainNavigationDestinations.Details)
-
-    interface Tab {
-        @get:StringRes
-        val title: Int
-        val destination: String
-    }
+enum class MainTab(@StringRes val title: Int, val destination: MainNavigationDestinations) {
+    Home(R.string.bottom_bar_home, MainNavigationDestinations.Home),
+    Search(R.string.bottom_bar_search, MainNavigationDestinations.Search),
+    WatchList(R.string.bottom_bar_watch_list, MainNavigationDestinations.WatchList)
 }
 enum class MainNavigationDestinations {
     Home,
     Details,
-    Search,
-    WatchList
+    WatchList,
+    Search
 }

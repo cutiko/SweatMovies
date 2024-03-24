@@ -12,7 +12,7 @@ import com.example.sweatmovies.ui.home.carrousel.uimodels.PopularCarrouselItem
 
 @Composable
 fun PopularMoviesCarrousel(
-    onItemClicked: ()-> Unit
+    onItemClicked: (Int)-> Unit
 ) {
     val popularMoviesViewModel: PopularMoviesViewModel = hiltViewModel()
     val movies by popularMoviesViewModel.carrouselItems.collectAsStateWithLifecycle()

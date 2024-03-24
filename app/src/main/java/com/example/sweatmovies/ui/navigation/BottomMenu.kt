@@ -17,17 +17,13 @@ fun BottomMenu(navController: NavController) {
         //start at home by default
         mutableIntStateOf(0)
     }
-    val items: List<MainDestination.Tab> = listOf(
-        MainDestination.Home,
-        MainDestination.Search,
-        MainDestination.WatchList
-    )
+    val tabs = MainTab.entries
     NavigationBar {
-        items.forEachIndexed { index, tab ->
+        tabs.forEachIndexed { index, tab ->
             NavigationBarItem(
                 selected = selectedItem == index,
                 onClick = {
-                    navController.navigate(tab.destination) {
+                    navController.navigate(tab.destination.name) {
                         launchSingleTop = true
                         restoreState = true
                     }
