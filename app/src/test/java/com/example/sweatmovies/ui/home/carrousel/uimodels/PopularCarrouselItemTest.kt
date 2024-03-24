@@ -31,7 +31,9 @@ class PopularCarrouselItemTest {
 
         assertEquals(movies.size, obtained.size)
         movies.forEachIndexed { index, movie ->
-            assertEquals(movie.id, obtained[index].id)
+            val item = obtained[index] as PopularCarrouselItem.Movie
+            assertEquals(movie.id, item.id)
+            assertEquals(index + 1, item.position)
         }
     }
 

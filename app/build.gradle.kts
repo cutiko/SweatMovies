@@ -91,6 +91,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
+    //coil for loading images from url
+    implementation(libs.coil.compose)
+
     //region unit test
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

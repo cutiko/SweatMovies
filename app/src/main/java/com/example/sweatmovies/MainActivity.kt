@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +23,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sweatmovies.repositories.MoviesRepository
 import com.example.sweatmovies.sources.NetworkResult
+import com.example.sweatmovies.ui.composables.Loading
 import com.example.sweatmovies.ui.home.carrousel.PopularMoviesViewModel
+import com.example.sweatmovies.ui.home.carrousel.composables.MovieCarrouselItem
 import com.example.sweatmovies.ui.home.carrousel.uimodels.PopularCarrouselItem
 import com.example.sweatmovies.ui.home.usecases.GetMoviesByCategoryUseCase
 import com.example.sweatmovies.ui.theme.SweatMoviesTheme
@@ -45,11 +48,11 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(key1 = Unit) {
                         popularMoviesViewModel.startObserving()
                     }
-                    LazyColumn {
+                    LazyRow {
                         items(count = movies.size, key = { index -> movies[index].id }) { index ->
                             when(val movie = movies[index]) {
-                                PopularCarrouselItem.Loading -> Text(text = "Loading")
-                                is PopularCarrouselItem.Movie -> Text(text = movie.position.toString())
+                                PopularCarrouselItem.Loading -> Loading()
+                                is PopularCarrouselItem.Movie -> MovieCarrouselItem(movie)
                             }
                         }
                     }

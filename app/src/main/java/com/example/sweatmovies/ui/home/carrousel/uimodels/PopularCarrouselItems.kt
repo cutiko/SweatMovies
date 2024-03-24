@@ -23,7 +23,7 @@ sealed class PopularCarrouselItem(open val id: Int) {
                         Movie(
                             id = movie.id,
                             photo = movie.photo,
-                            position = index
+                            position = index + 1
                         )
                     }
                 }
