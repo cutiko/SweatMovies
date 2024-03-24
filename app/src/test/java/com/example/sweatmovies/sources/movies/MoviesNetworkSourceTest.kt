@@ -53,4 +53,19 @@ class MoviesNetworkSourceTest {
         confirmVerified(moviesDBService)
     }
 
+    @Test
+    fun `test trailers call the service`() = runTest {
+        val expectedId = 2424
+        val idSlot = slot<Int>()
+        coEvery { moviesDBService.trailers(
+            movieId = capture(idSlot)
+        ) } returns mockk()
+
+        networkSource.trailers(expectedId)
+
+        assertEquals(expectedId, idSlot.captured)
+        coVerify(exactly = 1) { moviesDBService.trailers(expectedId) }
+        confirmVerified(moviesDBService)
+    }
+
 }

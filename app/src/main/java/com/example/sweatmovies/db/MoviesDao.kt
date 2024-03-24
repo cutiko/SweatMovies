@@ -20,4 +20,7 @@ interface MoviesDao {
 
     @Query("SELECT * FROM Movie WHERE title LIKE '%' || :title || '%'")
     suspend fun likeSearch(title: String): List<Movie>
+
+    @Query("SELECT * FROM Movie WHERE id = :id")
+    suspend fun byId(id: Int): Movie?
 }

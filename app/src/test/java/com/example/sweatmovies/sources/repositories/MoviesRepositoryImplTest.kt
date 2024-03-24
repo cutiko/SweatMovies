@@ -2,6 +2,8 @@ package com.example.sweatmovies.sources.repositories
 
 import com.example.sweatmovies.models.Movie
 import com.example.sweatmovies.models.MoviesResponse
+import com.example.sweatmovies.models.Trailer
+import com.example.sweatmovies.models.TrailersResponse
 import com.example.sweatmovies.repositories.MoviesRepositoryImpl
 import com.example.sweatmovies.sources.NetworkResult
 import com.example.sweatmovies.sources.movies.MoviesLocalSource
@@ -19,6 +21,7 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 
@@ -116,6 +119,60 @@ class MoviesRepositoryImplTest {
         coVerify(exactly = 1) { remoteSource.search(expectedQuery) }
         coVerify(exactly = 1) { localSource.insertMovies(any()) }
         confirmVerified(remoteSource, localSource)
+    }
+
+    //region trailer
+    @Test
+    fun `test trailer returns null when local source is error`() = runTest {
+        val result = NetworkResult.Error<TrailersResponse>()
+        coEvery { remoteSource.trailers(any()) } returns result
+
+        val obtained = moviesRepository.getTrailer(123)
+
+        assertNull(obtained)
+    }
+
+    @Test
+    fun `test trailer returns null when there are no available trailers`() = runTest {
+        val trailers = listOf(Trailer(site = "Facebook"))
+        val result = NetworkResult.Success(TrailersResponse(results = trailers))
+        coEvery { remoteSource.trailers(any()) } returns result
+
+        val obtained = moviesRepository.getTrailer(123)
+
+        assertNull(obtained)
+    }
+
+    @Test
+    fun `test trailer returns a url when there is a trailer available`() = runTest {
+        val key = "key"
+        val trailer = Trailer(
+            site = Trailer.YOUTUBE_TYPE,
+            type = Trailer.TRAILER_TYPE,
+            key = key
+        )
+        val trailers = listOf(trailer)
+        val result = NetworkResult.Success(TrailersResponse(results = trailers))
+        coEvery { remoteSource.trailers(any()) } returns result
+
+        val obtained = moviesRepository.getTrailer(123)
+
+        val expected = Trailer.YOUTUBE_BASE_URL + key
+        assertEquals(expected, obtained)
+    }
+    //endregion
+
+    @Test
+    fun `test getMovie calls the local source`() = runTest {
+        val expectedId = 123
+        val idSlot = slot<Int>()
+        coEvery { localSource.getMovie(capture(idSlot)) } returns null
+
+        moviesRepository.getMovie(expectedId)
+
+        assertEquals(expectedId, idSlot.captured)
+        coVerify(exactly = 1) { localSource.getMovie(any()) }
+        confirmVerified(localSource)
     }
 
 }

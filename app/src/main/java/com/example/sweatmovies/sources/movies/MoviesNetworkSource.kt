@@ -1,6 +1,7 @@
 package com.example.sweatmovies.sources.movies
 
 import com.example.sweatmovies.models.MoviesResponse
+import com.example.sweatmovies.models.TrailersResponse
 import com.example.sweatmovies.network.MovieDBService
 import com.example.sweatmovies.sources.BaseNetworkSource
 import com.example.sweatmovies.sources.NetworkResult
@@ -11,6 +12,8 @@ interface MoviesRemoteSource : BaseNetworkSource {
     suspend fun getPopular() : NetworkResult<MoviesResponse>
 
     suspend fun search(query: String): NetworkResult<MoviesResponse>
+
+    suspend fun trailers(movieId: Int): NetworkResult<TrailersResponse>
 }
 
 class MoviesNetworkSource @Inject constructor(
@@ -28,6 +31,12 @@ class MoviesNetworkSource @Inject constructor(
 
     override suspend fun search(query: String): NetworkResult<MoviesResponse> {
         return request { moviesServices.search(query) }
+    }
+
+    override suspend fun trailers(movieId: Int): NetworkResult<TrailersResponse> {
+        return request {
+            moviesServices.trailers(movieId)
+        }
     }
 
 }

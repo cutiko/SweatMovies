@@ -16,6 +16,10 @@ interface MoviesRepository {
     fun observePopular(ids: List<Int>): Flow<List<Movie>>
 
     suspend fun searchMovies(query: String): List<Movie>
+
+    suspend fun getTrailer(movieId: Int): String?
+
+    suspend fun getMovie(id: Int): Movie?
 }
 
 class MoviesRepositoryImpl @Inject constructor(
@@ -54,4 +58,13 @@ class MoviesRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getTrailer(movieId: Int): String? {
+        return when(val response = remoteSource.trailers(movieId)) {
+            is NetworkResult.Error -> null
+            is NetworkResult.Success -> response.data.trailer()
+        }
+    }
+
+    override suspend fun getMovie(id: Int) = localSource.getMovie(id)
 }

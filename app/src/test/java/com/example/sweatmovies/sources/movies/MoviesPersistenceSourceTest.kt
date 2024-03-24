@@ -83,4 +83,14 @@ class MoviesPersistenceSourceTest {
         confirmVerified(moviesDao)
     }
 
+    @Test
+    fun `test getMovie calls the DAO`() = runTest {
+        coEvery { moviesDao.byId(any()) } returns mockk()
+
+        localSource.getMovie(123)
+
+        coVerify(exactly = 1) { moviesDao.byId(any()) }
+        confirmVerified(moviesDao)
+    }
+
 }

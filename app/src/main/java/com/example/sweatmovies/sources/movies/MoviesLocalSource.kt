@@ -13,6 +13,8 @@ interface MoviesLocalSource {
     suspend fun insertMovies(movies: List<Movie>)
 
     suspend fun searchMovies(term: String): List<Movie>
+
+    suspend fun getMovie(id: Int): Movie?
 }
 
 class MoviesPersistenceSource @Inject constructor(
@@ -34,4 +36,5 @@ class MoviesPersistenceSource @Inject constructor(
 
     override suspend fun searchMovies(term: String) = dataBase.moviesDao().likeSearch(term)
 
+    override suspend fun getMovie(id: Int) = dataBase.moviesDao().byId(id)
 }
