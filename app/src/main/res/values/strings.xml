@@ -3,4 +3,7 @@
     <string name="bottom_bar_home">Home</string>
     <string name="bottom_bar_search">Search</string>
     <string name="bottom_bar_watch_list">Watch List</string>
+    <string name="back_navigation_content_description">Navigate Back</string>
+    <string name="add_favorite_content_description">Add to Watch List</string>
+    <string name="add_watch_list_prompt">Add this movie to your Watch List</string>
 </resources>

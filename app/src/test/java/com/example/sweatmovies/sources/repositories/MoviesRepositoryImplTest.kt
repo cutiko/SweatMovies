@@ -147,8 +147,7 @@ class MoviesRepositoryImplTest {
     fun `test trailer returns a url when there is a trailer available`() = runTest {
         val key = "key"
         val trailer = Trailer(
-            site = Trailer.YOUTUBE_TYPE,
-            type = Trailer.TRAILER_TYPE,
+            site = Trailer.YOUTUBE_SITE,
             key = key
         )
         val trailers = listOf(trailer)

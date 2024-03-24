@@ -46,7 +46,7 @@ fun MainNavigationHost(
             arguments = listOf(navArgument("movieId") { type = NavType.IntType })
         ) { backStackEntry ->
             val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
-            MovieDetailsScreens(movieId)
+            MovieDetailsScreens(movieId) { navController.popBackStack() }
         }
     }
 }
