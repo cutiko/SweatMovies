@@ -1,6 +1,7 @@
 package com.example.sweatmovies.ui.home.carrousel.composables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,14 +16,15 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.sweatmovies.ui.home.carrousel.uimodels.PopularCarrouselItem
 
 @Composable
-fun MovieCarrouselItem(movie: PopularCarrouselItem.Movie) {
+fun MovieCarrouselItem(movie: PopularCarrouselItem.Movie, onItemClicked: () -> Unit) {
     Box(
         modifier = Modifier.padding(16.dp)
     ) {
         Image(
             modifier = Modifier
                 .size(180.dp, 240.dp)
-                .padding(16.dp),
+                .padding(16.dp)
+                .clickable { onItemClicked.invoke() },
             painter = rememberAsyncImagePainter(
                 movie.photo
             ),
