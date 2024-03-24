@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface MoviesRepository {
-    suspend fun fetchPopularMovies(): NetworkResult<MoviesResponse>
+    suspend fun fetchPopularMovies(): NetworkResult<MoviesResponse<Movie>>
 
     suspend fun getLocalPopular(ids: List<Int>): List<Movie>
 
@@ -20,7 +20,7 @@ class MoviesRepositoryImpl @Inject constructor(
     private val remoteSource: MoviesRemoteSource,
     private val localSource: MoviesLocalSource
 ) : MoviesRepository {
-    override suspend fun fetchPopularMovies(): NetworkResult<MoviesResponse> {
+    override suspend fun fetchPopularMovies(): NetworkResult<MoviesResponse<Movie>> {
         val result = remoteSource.getPopular()
 
         when(result) {

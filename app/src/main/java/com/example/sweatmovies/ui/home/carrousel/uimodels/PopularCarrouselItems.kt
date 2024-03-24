@@ -22,7 +22,7 @@ sealed class PopularCarrouselItem(open val id: Int) {
                     result.movies.mapIndexed { index, movie ->
                         Movie(
                             id = movie.id,
-                            photo = movie.photo,
+                            photo = movie.poster(),
                             position = index + 1
                         )
                     }

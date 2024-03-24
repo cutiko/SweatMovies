@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitProvider {
 
-    private const val BASE_URL = "https://api.themoviedb.org/3/movie/"
+    private const val BASE_URL = "https://api.themoviedb.org/3/"
     private const val TOKEN = BuildConfig.MOVIES_KEY
 
     fun retrofit(): Retrofit {
