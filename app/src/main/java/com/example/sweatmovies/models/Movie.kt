@@ -1,6 +1,7 @@
 package com.example.sweatmovies.models
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity
@@ -20,4 +21,11 @@ data class Movie(
     val voteAverage: Double = 0.0,
     val voteCount: Int = 0,
     val lastUpdate: Long? = 0L
-)
+) {
+    @Ignore
+    val photo = "$PHOTO_BASE_URL$backdropPath"
+
+    companion object {
+        private const val PHOTO_BASE_URL = "https://image.tmdb.org/t/p/w1280/"
+    }
+}

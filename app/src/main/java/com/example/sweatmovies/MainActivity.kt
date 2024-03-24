@@ -5,16 +5,25 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sweatmovies.repositories.MoviesRepository
 import com.example.sweatmovies.sources.NetworkResult
+import com.example.sweatmovies.ui.home.carrousel.PopularMoviesViewModel
+import com.example.sweatmovies.ui.home.carrousel.uimodels.PopularCarrouselItem
 import com.example.sweatmovies.ui.home.usecases.GetMoviesByCategoryUseCase
 import com.example.sweatmovies.ui.theme.SweatMoviesTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,26 +34,24 @@ import kotlin.math.log
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var useCase: GetMoviesByCategoryUseCase
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SweatMoviesTheme {
-                val coroutineScope = rememberCoroutineScope()
+                val popularMoviesViewModel: PopularMoviesViewModel = viewModel()
+                val movies by popularMoviesViewModel.carrouselItems.collectAsStateWithLifecycle()
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
-                    Button(
-                        onClick = {
-                            coroutineScope.launch {
-                                useCase.observePopularMovies().collect {
-                                    Log.d("CUTIKO_TAG", "$it")
-                                }
+                    LaunchedEffect(key1 = Unit) {
+                        popularMoviesViewModel.startObserving()
+                    }
+                    LazyColumn {
+                        items(count = movies.size, key = { index -> movies[index].id }) { index ->
+                            when(val movie = movies[index]) {
+                                PopularCarrouselItem.Loading -> Text(text = "Loading")
+                                is PopularCarrouselItem.Movie -> Text(text = movie.position.toString())
                             }
                         }
-                    ) {
-                        Text(text = "request")
                     }
                 }
             }
