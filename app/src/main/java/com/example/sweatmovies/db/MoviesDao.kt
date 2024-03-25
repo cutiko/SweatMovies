@@ -13,7 +13,10 @@ interface MoviesDao {
     fun observeRecentPopular(ids: List<Int>): Flow<List<Movie>>
 
     @Query("SELECT * FROM Movie WHERE id IN (:ids) ORDER BY lastUpdate DESC LIMIT 20")
-    suspend fun getRecentPopular(ids: List<Int>): List<Movie>
+    suspend fun getRecentTwenty(ids: List<Int>): List<Movie>
+
+    @Query("SELECT * FROM Movie WHERE id IN (:ids) ORDER BY lastUpdate DESC LIMIT 6")
+    suspend fun getRecentSix(ids: List<Int>): List<Movie>
 
     @Query("SELECT * FROM Movie WHERE id IN (:ids) ORDER BY title")
     suspend fun getMoviesById(ids: List<Int>): List<Movie>

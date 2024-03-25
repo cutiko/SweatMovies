@@ -1,6 +1,7 @@
 package com.example.sweatmovies.repositories
 
 import com.example.sweatmovies.models.MovieCategories
+import com.example.sweatmovies.network.MovieDBService
 import com.example.sweatmovies.sources.categories.MoviesCategoriesLocalSource
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -39,14 +40,13 @@ class MovieCategoriesRepositoryImplTest {
     }
 
     @Test
-    fun `test updatePopular calls the source`() = runTest {
+    fun `test update calls the source`() = runTest {
         val ids = listOf(1, 2, 3)
-        val idsSlot = slot<List<Int>>()
-        coEvery { repository.updatePopular(capture(idsSlot)) } just Runs
+        val category = MovieDBService.Categories.Popular
+        coEvery { repository.update(ids, category) } just Runs
 
-        repository.updatePopular(ids)
+        repository.update(ids, category)
 
-        assertEquals(ids, idsSlot.captured)
         coVerify(exactly = 1) { categoriesLocalSource.updatePopular(ids) }
         confirmVerified(categoriesLocalSource)
     }

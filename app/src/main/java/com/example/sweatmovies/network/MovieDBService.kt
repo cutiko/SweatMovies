@@ -9,8 +9,9 @@ import retrofit2.http.Query
 
 interface MovieDBService {
 
-    @GET("movie/popular")
-    suspend fun getPopular(
+    @GET("movie/{category}")
+    suspend fun byCategory(
+        @Path("category") category: String,
         @Query("language") language: String = "en-US",
         @Query("page") page: Int = 1
     ): Response<MoviesResponse>
@@ -28,5 +29,12 @@ interface MovieDBService {
         @Path("movieId") movieId: Int,
         @Query("language") language: String = "en-US",
     ): Response<TrailersResponse>
+
+    enum class Categories(val path: String) {
+        Popular("popular"),
+        NowPlaying("now_playing"),
+        TopRated("top_rated"),
+        Upcoming("upcoming")
+    }
 
 }

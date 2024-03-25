@@ -2,6 +2,7 @@ package com.example.sweatmovies.repositories
 
 import com.example.sweatmovies.models.Movie
 import com.example.sweatmovies.models.MoviesResponse
+import com.example.sweatmovies.network.MovieDBService
 import com.example.sweatmovies.sources.NetworkResult
 import com.example.sweatmovies.sources.movies.MoviesLocalSource
 import com.example.sweatmovies.sources.movies.MoviesRemoteSource
@@ -10,6 +11,12 @@ import javax.inject.Inject
 
 interface MoviesRepository {
     suspend fun fetchPopularMovies(): NetworkResult<MoviesResponse>
+
+    suspend fun fetchNowPlayingMovies(): NetworkResult<MoviesResponse>
+
+    suspend fun fetchTopRatedMovies(): NetworkResult<MoviesResponse>
+
+    suspend fun fetchUpcomingMovies(): NetworkResult<MoviesResponse>
 
     suspend fun getLocalPopular(ids: List<Int>): List<Movie>
 
@@ -22,6 +29,8 @@ interface MoviesRepository {
     suspend fun getMovie(id: Int): Movie?
 
     suspend fun getMoviesById(ids: List<Int>): List<Movie>
+
+    suspend fun getRecentSix(ids: List<Int>): List<Movie>
 }
 
 class MoviesRepositoryImpl @Inject constructor(
@@ -29,7 +38,25 @@ class MoviesRepositoryImpl @Inject constructor(
     private val localSource: MoviesLocalSource
 ) : MoviesRepository {
     override suspend fun fetchPopularMovies(): NetworkResult<MoviesResponse> {
-        val result = remoteSource.getPopular()
+        return fetchMoviesByCategory(MovieDBService.Categories.Popular)
+    }
+
+    override suspend fun fetchNowPlayingMovies(): NetworkResult<MoviesResponse> {
+        return fetchMoviesByCategory(MovieDBService.Categories.NowPlaying)
+    }
+
+    override suspend fun fetchTopRatedMovies(): NetworkResult<MoviesResponse> {
+        return fetchMoviesByCategory(MovieDBService.Categories.TopRated)
+    }
+
+    override suspend fun fetchUpcomingMovies(): NetworkResult<MoviesResponse> {
+        return fetchMoviesByCategory(MovieDBService.Categories.Upcoming)
+    }
+
+    private suspend fun fetchMoviesByCategory(
+        category: MovieDBService.Categories
+    ): NetworkResult<MoviesResponse> {
+        val result = remoteSource.getByCategory(category)
 
         when(result) {
             is NetworkResult.Error -> Unit //Do nothing, if network error don't delete from local
@@ -71,4 +98,6 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun getMovie(id: Int) = localSource.getMovie(id)
 
     override suspend fun getMoviesById(ids: List<Int>) = localSource.getMoviesById(ids)
+
+    override suspend fun getRecentSix(ids: List<Int>) = localSource.getRecentSix(ids)
 }

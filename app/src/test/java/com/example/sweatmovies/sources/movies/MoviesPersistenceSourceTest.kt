@@ -49,12 +49,12 @@ class MoviesPersistenceSourceTest {
         val ids = listOf(1, 2, 3)
         val movies = ids.map { Movie(id = it) }
         val idsSlot = slot<List<Int>>()
-        coEvery { moviesDao.getRecentPopular(capture(idsSlot)) } returns movies
+        coEvery { moviesDao.getRecentTwenty(capture(idsSlot)) } returns movies
 
         val obtained = localSource.getPopular(ids)
 
         assertEquals(ids, idsSlot.captured)
-        coVerify(exactly = 1) { moviesDao.getRecentPopular(ids) }
+        coVerify(exactly = 1) { moviesDao.getRecentTwenty(ids) }
         confirmVerified(moviesDao)
         assertEquals(movies, obtained)
     }

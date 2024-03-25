@@ -17,6 +17,8 @@ interface MoviesLocalSource {
     suspend fun getMovie(id: Int): Movie?
 
     suspend fun getMoviesById(ids: List<Int>): List<Movie>
+
+    suspend fun getRecentSix(ids: List<Int>): List<Movie>
 }
 
 class MoviesPersistenceSource @Inject constructor(
@@ -28,7 +30,7 @@ class MoviesPersistenceSource @Inject constructor(
     }
 
     override suspend fun getPopular(ids: List<Int>): List<Movie> {
-        return dataBase.moviesDao().getRecentPopular(ids)
+        return dataBase.moviesDao().getRecentTwenty(ids)
     }
 
     override suspend fun insertMovies(movies: List<Movie>) {
@@ -41,4 +43,6 @@ class MoviesPersistenceSource @Inject constructor(
     override suspend fun getMovie(id: Int) = dataBase.moviesDao().byId(id)
 
     override suspend fun getMoviesById(ids: List<Int>) = dataBase.moviesDao().getMoviesById(ids)
+
+    override suspend fun getRecentSix(ids: List<Int>) = dataBase.moviesDao().getRecentSix(ids)
 }

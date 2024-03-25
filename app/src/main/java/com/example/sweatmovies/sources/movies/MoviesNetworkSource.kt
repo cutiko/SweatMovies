@@ -9,7 +9,7 @@ import retrofit2.Retrofit
 import javax.inject.Inject
 
 interface MoviesRemoteSource : BaseNetworkSource {
-    suspend fun getPopular() : NetworkResult<MoviesResponse>
+    suspend fun getByCategory(category: MovieDBService.Categories) : NetworkResult<MoviesResponse>
 
     suspend fun search(query: String): NetworkResult<MoviesResponse>
 
@@ -23,9 +23,9 @@ class MoviesNetworkSource @Inject constructor(
     private val moviesServices by lazy {
         retrofit.create(MovieDBService::class.java)
     }
-    override suspend fun getPopular(): NetworkResult<MoviesResponse> {
+    override suspend fun getByCategory(category: MovieDBService.Categories): NetworkResult<MoviesResponse> {
         return request {
-            moviesServices.getPopular()
+            moviesServices.byCategory(category.path)
         }
     }
 

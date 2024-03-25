@@ -6,4 +6,7 @@
     <string name="back_navigation_content_description">Navigate Back</string>
     <string name="add_favorite_content_description">Add to Watch List</string>
     <string name="add_watch_list_prompt">Add this movie to your Watch List</string>
+    <string name="home_tab_now_playing">Now Playing</string>
+    <string name="home_tab_upcoming">Upcoming</string>
+    <string name="home_tab_top_rated">Top Rated</string>
 </resources>

@@ -30,11 +30,12 @@ class MoviesNetworkSourceTest {
     }
     @Test
     fun `test getPopular call the service`() = runTest {
-        coEvery { moviesDBService.getPopular() } returns mockk()
+        val popular = MovieDBService.Categories.Popular
+        coEvery { moviesDBService.byCategory(popular.path) } returns mockk()
 
-        networkSource.getPopular()
+        networkSource.getByCategory(popular)
 
-        coVerify(exactly = 1) { moviesDBService.getPopular() }
+        coVerify(exactly = 1) { moviesDBService.byCategory(popular.path) }
         confirmVerified(moviesDBService)
     }
 

@@ -12,6 +12,7 @@ import com.example.sweatmovies.R
 import com.example.sweatmovies.ui.search.SearchScreen
 import com.example.sweatmovies.ui.details.MovieDetailsScreens
 import com.example.sweatmovies.ui.home.carrousel.composables.PopularMoviesCarrousel
+import com.example.sweatmovies.ui.home.composables.HomeTab
 import com.example.sweatmovies.ui.navigation.MainNavigationDestinations.*
 import com.example.sweatmovies.ui.watchlist.WatchListScreen
 
@@ -23,10 +24,10 @@ fun MainNavigationHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = MainNavigationDestinations.Home.name
+        startDestination = Home.name
     ) {
         composable(Home.name) {
-            PopularMoviesCarrousel {
+            HomeTab {
                 navController.navigate("${Details.name}/$it")
             }
         }

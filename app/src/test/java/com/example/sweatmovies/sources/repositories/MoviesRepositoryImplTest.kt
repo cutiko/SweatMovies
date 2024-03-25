@@ -4,6 +4,7 @@ import com.example.sweatmovies.models.Movie
 import com.example.sweatmovies.models.MoviesResponse
 import com.example.sweatmovies.models.Trailer
 import com.example.sweatmovies.models.TrailersResponse
+import com.example.sweatmovies.network.MovieDBService
 import com.example.sweatmovies.repositories.MoviesRepositoryImpl
 import com.example.sweatmovies.sources.NetworkResult
 import com.example.sweatmovies.sources.movies.MoviesLocalSource
@@ -43,11 +44,11 @@ class MoviesRepositoryImplTest {
     @Test
     fun `test fetchPopularMovies call the remote source`() = runTest {
         val expectedResult = NetworkResult.Error<MoviesResponse>()
-        coEvery { remoteSource.getPopular() } returns expectedResult
+        coEvery { remoteSource.getByCategory(any()) } returns expectedResult
 
         val obtained = moviesRepository.fetchPopularMovies()
 
-        coVerify(exactly = 1) { remoteSource.getPopular() }
+        coVerify(exactly = 1) { remoteSource.getByCategory(MovieDBService.Categories.Popular) }
         verify { localSource wasNot Called }
         confirmVerified(remoteSource, localSource)
         assertEquals(expectedResult, obtained)
@@ -58,17 +59,17 @@ class MoviesRepositoryImplTest {
         val movies = listOf(Movie(), Movie(), Movie())
         val movieResponse = MoviesResponse(results = movies)
         val expectedResult = NetworkResult.Success(movieResponse)
-        coEvery { remoteSource.getPopular() } returns expectedResult
+        coEvery { remoteSource.getByCategory(any()) } returns expectedResult
         val moviesSlot = slot<List<Movie>>()
         coEvery { localSource.insertMovies(capture(moviesSlot)) } just Runs
 
         val obtained = moviesRepository.fetchPopularMovies()
 
-        coVerify(exactly = 1) { remoteSource.getPopular() }
+        coVerify(exactly = 1) { remoteSource.getByCategory(any()) }
         assertEquals(movies, moviesSlot.captured)
         coVerify(exactly = 1) { localSource.insertMovies(movies) }
         coVerifyOrder {
-            remoteSource.getPopular()
+            remoteSource.getByCategory(any())
             localSource.insertMovies(movies)
         }
         confirmVerified(remoteSource, localSource)

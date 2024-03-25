@@ -9,6 +9,12 @@ interface MoviesCategoriesLocalSource {
     fun observeCategories(): Flow<MovieCategories?>
     suspend fun updatePopular(ids: List<Int>)
 
+    suspend fun updateNowPlaying(ids: List<Int>)
+
+    suspend fun updateUpcoming(ids: List<Int>)
+
+    suspend fun updateTopRated(ids: List<Int>)
+
     suspend fun getCategories(): MovieCategories
 }
 
@@ -17,10 +23,29 @@ class MoviesCategoriesPersistenceSource @Inject constructor(
 ) : MoviesCategoriesLocalSource {
     override fun observeCategories() = moviesDataBase.categoriesDao().observeMovieCategories()
     override suspend fun updatePopular(ids: List<Int>) {
-        val categories = moviesDataBase.categoriesDao().safeGetMovieCategories()
+        val categories = getSafeCategories()
         val updatedCategories = categories.copy(popular = ids)
         moviesDataBase.categoriesDao().insert(updatedCategories)
     }
+    override suspend fun updateNowPlaying(ids: List<Int>) {
+        val categories = getSafeCategories()
+        val updatedCategories = categories.copy(nowPlaying = ids)
+        moviesDataBase.categoriesDao().insert(updatedCategories)
+    }
+
+    override suspend fun updateUpcoming(ids: List<Int>) {
+        val categories = getSafeCategories()
+        val updatedCategories = categories.copy(upComing = ids)
+        moviesDataBase.categoriesDao().insert(updatedCategories)
+    }
+
+    override suspend fun updateTopRated(ids: List<Int>) {
+        val categories = getSafeCategories()
+        val updatedCategories = categories.copy(topRated = ids)
+        moviesDataBase.categoriesDao().insert(updatedCategories)
+    }
+    private suspend fun getSafeCategories() = moviesDataBase.categoriesDao().safeGetMovieCategories()
+
     override suspend fun getCategories(): MovieCategories {
         return moviesDataBase.categoriesDao().safeGetMovieCategories()
     }
