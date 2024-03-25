@@ -20,10 +20,9 @@ class PopularMoviesViewModel @Inject constructor(
     private val _carrouselItems = MutableStateFlow(PopularCarrouselItem.default)
     val carrouselItems: StateFlow<List<PopularCarrouselItem>>
         get() = _carrouselItems
-    fun startObserving() = viewModelScope.launch {
-        getMoviesByCategoryUseCase.observePopularMovies().collect { result ->
-            _carrouselItems.update { it.update(result) }
-        }
+    fun getMovies() = viewModelScope.launch {
+        val movies = getMoviesByCategoryUseCase.getPopularMovies()
+        _carrouselItems.update { it.update(movies) }
     }
 
 }

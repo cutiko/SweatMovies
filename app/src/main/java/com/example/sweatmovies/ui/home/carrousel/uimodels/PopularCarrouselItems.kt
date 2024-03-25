@@ -1,7 +1,10 @@
 package com.example.sweatmovies.ui.home.carrousel.uimodels
 
+
+import com.example.sweatmovies.models.Movie
 import com.example.sweatmovies.ui.home.usecases.GetMoviesByCategoryUseCase
 
+private typealias MovieModel = Movie
 sealed class PopularCarrouselItem(open val id: Int) {
     data object Loading : PopularCarrouselItem(-1)
     data class Movie(
@@ -12,21 +15,15 @@ sealed class PopularCarrouselItem(open val id: Int) {
 
     companion object {
         val default: List<PopularCarrouselItem> = listOf(Loading)
-
         fun List<PopularCarrouselItem>.update(
-            result: GetMoviesByCategoryUseCase.Result
+            movies: List<MovieModel>
         ): List<PopularCarrouselItem> {
-            return when(result) {
-                GetMoviesByCategoryUseCase.Result.Loading -> default
-                is GetMoviesByCategoryUseCase.Result.Success -> {
-                    result.movies.mapIndexed { index, movie ->
-                        Movie(
-                            id = movie.id,
-                            photo = movie.poster(),
-                            position = index + 1
-                        )
-                    }
-                }
+            return movies.mapIndexed { index, movie ->
+                Movie(
+                    id = movie.id,
+                    photo = movie.poster(),
+                    position = index + 1
+                )
             }
         }
     }

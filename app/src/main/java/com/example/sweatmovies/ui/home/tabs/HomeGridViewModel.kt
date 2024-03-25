@@ -29,33 +29,23 @@ class HomeGridViewModel @Inject constructor(
 
     fun observeMovies() {
         viewModelScope.launch {
-            getMoviesByCategoryUseCase.observeNowPlaying().collect { result ->
-                _state.update { it.nowPlaying(result.toMovies()) }
-            }
+            val movies = getMoviesByCategoryUseCase.getNowPlaying()
+            _state.update { it.nowPlaying(movies) }
         }
 
         viewModelScope.launch {
-            getMoviesByCategoryUseCase.observeUpcoming().collect { result ->
-                _state.update { it.upcoming(result.toMovies()) }
-            }
+            val movies = getMoviesByCategoryUseCase.getUpcoming()
+            _state.update { it.upcoming(movies) }
         }
 
         viewModelScope.launch {
-            getMoviesByCategoryUseCase.observeTopRated().collect { result ->
-                _state.update { it.topRated(result.toMovies()) }
-            }
+            val movies = getMoviesByCategoryUseCase.getTopRated()
+            _state.update { it.topRated(movies) }
         }
     }
 
     fun selectTab(tab: HomeTabs) = _state.update {
         it.selectTab(tab)
-    }
-
-    private fun GetMoviesByCategoryUseCase.Result.toMovies(): List<Movie> {
-        return when(this) {
-            GetMoviesByCategoryUseCase.Result.Loading -> emptyList()
-            is GetMoviesByCategoryUseCase.Result.Success -> this.movies
-        }
     }
 
 }
